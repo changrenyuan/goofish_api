@@ -1,0 +1,17 @@
+{
+  "name": "@local/topsdk",
+  "version": "1.6.0",
+  "description": "Taobao Open API & Message Client (local copy)",
+  "main": "index.js",
+  "dependencies": {
+    "form-data": "^0.2.0",
+    "mime": "~1.3.4",
+    "ws": "^0.4.32",
+    "iconv-lite": "^0.4.7",
+    "urlencode": "^1.1.0",
+    "request": "~2.72.0"
+  },
+  "engines": {
+    "node": ">=0.8"
+  }
+}

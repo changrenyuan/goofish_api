@@ -117,19 +117,19 @@ export default function DashboardPage() {
           </div>
 
           {/* API 状态卡片 */}
-          <Card className="mb-8">
+          <Card className="mb-8 border-orange-200 bg-orange-50/50 dark:border-orange-800 dark:bg-orange-950/10">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle>API 状态</CardTitle>
-                  <CardDescription>阿里开放平台接口配置状态</CardDescription>
+                  <CardTitle className="text-orange-900 dark:text-orange-100">API 集成状态</CardTitle>
+                  <CardDescription className="text-orange-700/80 dark:text-orange-300/80">阿里开放平台接口配置与集成进度</CardDescription>
                 </div>
                 {loading ? (
-                  <Loader2 className="h-5 w-5 animate-spin text-slate-400" />
+                  <Loader2 className="h-5 w-5 animate-spin text-orange-600 dark:text-orange-400" />
                 ) : apiStatus?.apiConfigured ? (
-                  <CheckCircle2 className="h-5 w-5 text-green-500" />
+                  <CheckCircle2 className="h-5 w-5 text-orange-600 dark:text-orange-400" />
                 ) : (
-                  <XCircle className="h-5 w-5 text-red-500" />
+                  <XCircle className="h-5 w-5 text-orange-600 dark:text-orange-400" />
                 )}
               </div>
             </CardHeader>
@@ -137,7 +137,13 @@ export default function DashboardPage() {
               {loading ? (
                 <p className="text-sm text-slate-600 dark:text-slate-400">加载中...</p>
               ) : apiStatus?.apiConfigured ? (
-                <div className="space-y-2">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-sm">
+                    <CheckCircle2 className="h-4 w-4 text-green-500" />
+                    <span className="text-slate-600 dark:text-slate-400">
+                      SDK 集成成功（v1.6.0）
+                    </span>
+                  </div>
                   <div className="flex items-center gap-2 text-sm">
                     <CheckCircle2 className="h-4 w-4 text-green-500" />
                     <span className="text-slate-600 dark:text-slate-400">
@@ -147,8 +153,22 @@ export default function DashboardPage() {
                   <div className="flex items-center gap-2 text-sm">
                     <CheckCircle2 className="h-4 w-4 text-green-500" />
                     <span className="text-slate-600 dark:text-slate-400">
-                      App Secret: {apiStatus.appSecret}
+                      API 配置完整
                     </span>
+                  </div>
+                  <div className="rounded-md border border-orange-200 bg-orange-100 p-3 text-sm dark:border-orange-800 dark:bg-orange-950/30">
+                    <div className="flex items-start gap-2 text-orange-900 dark:text-orange-100">
+                      <XCircle className="h-4 w-4 mt-0.5 flex-shrink-0 text-orange-600 dark:text-orange-400" />
+                      <div className="space-y-1">
+                        <p className="font-medium">API 名称待确认</p>
+                        <p className="text-xs text-orange-800 dark:text-orange-200">
+                          当前闲鱼 API 名称 (taobao.idle.item.search) 无效，需要在淘宝开放平台确认正确的 API 名称。
+                        </p>
+                        <p className="text-xs text-orange-800 dark:text-orange-200">
+                          请查看 <code className="px-1 py-0.5 rounded bg-white/50 dark:bg-black/20">SDK_INTEGRATION_STATUS.md</code> 了解详情
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ) : (

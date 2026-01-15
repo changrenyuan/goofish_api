@@ -1,4 +1,4 @@
-import { ApiClient } from 'top-sdk-ts';
+import { ApiClient } from '@local/topsdk';
 
 // 懒加载淘宝客户端，确保环境变量已加载
 function getClient(): ApiClient {
@@ -18,7 +18,7 @@ function getClient(): ApiClient {
   return new ApiClient({
     appkey: appKey,
     appsecret: appSecret,
-    REST_URL: 'https://eco.taobao.com/router/rest',
+    url: 'https://eco.taobao.com/router/rest',
   });
 }
 
@@ -42,7 +42,7 @@ export async function searchIdleItems(params: {
 
     // 将回调函数转换为 Promise
     const result = await new Promise((resolve, reject) => {
-      client.execute('taobao.idle.item.search', apiParams, function(error, response) {
+      client.execute('taobao.idle.item.search', apiParams, function(error: any, response: any) {
         console.log('回调函数被调用，error:', error, 'response:', response);
         if (error) {
           reject(error);
@@ -55,7 +55,8 @@ export async function searchIdleItems(params: {
     console.log('API调用返回结果:', JSON.stringify(result, null, 2));
     return result;
   } catch (error) {
-    console.error('搜索闲鱼商品失败:', error);
+    console.error('搜索闲鱼商品失败，详细错误:', error);
+    console.error('错误堆栈:', error instanceof Error ? error.stack : 'No stack');
     throw error;
   }
 }

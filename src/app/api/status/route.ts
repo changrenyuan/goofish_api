@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { isTaobaoConfigured, taobaoClient } from '@/lib/taobao';
+import { isTaobaoConfigured } from '@/lib/taobao';
 
 export async function GET() {
   const configured = isTaobaoConfigured();
