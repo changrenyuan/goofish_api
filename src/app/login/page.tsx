@@ -1,4 +1,7 @@
-import { Metadata } from 'next';
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,12 +9,40 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
-export const metadata: Metadata = {
-  title: '登录 - 闲鱼数据分析平台',
-  description: '登录闲鱼商品数据分析平台',
-};
-
 export default function LoginPage() {
+  const router = useRouter();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
+
+    // 简单的客户端验证
+    if (!username || !password) {
+      setError('请输入用户名和密码');
+      setIsLoading(false);
+      return;
+    }
+
+    // 演示：简单的验证逻辑（实际项目应该调用后端API）
+    // 模拟API调用延迟
+    await new Promise(resolve => setTimeout(resolve, 800));
+
+    if (username === 'test' && password === 'test123') {
+      // 登录成功，跳转到仪表盘
+      router.push('/dashboard');
+    } else {
+      // 登录失败
+      setError('用户名或密码错误，请使用测试账号：test / test123');
+    }
+
+    setIsLoading(false);
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 px-4 dark:from-slate-900 dark:to-slate-800">
       <div className="w-full max-w-md">
@@ -37,7 +68,12 @@ export default function LoginPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="space-y-4">
+            {error && (
+              <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600 dark:border-red-800 dark:bg-red-950/20 dark:text-red-400">
+                {error}
+              </div>
+            )}
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <div className="space-y-2">
                 <Label htmlFor="username">用户名</Label>
                 <Input
@@ -45,6 +81,9 @@ export default function LoginPage() {
                   type="text"
                   placeholder="请输入用户名"
                   className="h-11"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  disabled={isLoading}
                 />
               </div>
 
@@ -63,11 +102,14 @@ export default function LoginPage() {
                   type="password"
                   placeholder="请输入密码"
                   className="h-11"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={isLoading}
                 />
               </div>
 
-              <Button type="submit" className="h-11 w-full rounded-full">
-                登录
+              <Button type="submit" className="h-11 w-full rounded-full" disabled={isLoading}>
+                {isLoading ? '登录中...' : '登录'}
               </Button>
 
               <Separator />
