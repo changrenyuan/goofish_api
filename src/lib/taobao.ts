@@ -1,11 +1,26 @@
 import { ApiClient } from 'top-sdk-ts';
 
-// 初始化淘宝客户端
-export const taobaoClient = new ApiClient({
-  appKey: process.env.TAOBAO_APP_KEY || '',
-  appSecret: process.env.TAOBAO_APP_SECRET || '',
-  restUrl: 'https://eco.taobao.com/router/rest',
-});
+// 懒加载淘宝客户端，确保环境变量已加载
+function getClient(): ApiClient {
+  const appKey = process.env.TAOBAO_APP_KEY;
+  const appSecret = process.env.TAOBAO_APP_SECRET;
+
+  console.log('环境变量检查:', {
+    hasAppKey: !!appKey,
+    hasAppSecret: !!appSecret,
+    appKey,
+  });
+
+  if (!appKey || !appSecret) {
+    throw new Error('appkey or appsecret need!');
+  }
+
+  return new ApiClient({
+    appkey: appKey,
+    appsecret: appSecret,
+    REST_URL: 'https://eco.taobao.com/router/rest',
+  });
+}
 
 // 闲鱼商品搜索接口
 export async function searchIdleItems(params: {
@@ -14,11 +29,30 @@ export async function searchIdleItems(params: {
   pageSize?: number; // 每页数量
 }) {
   try {
-    const result = await taobaoClient.execute('taobao.idle.item.search', {
+    console.log('开始搜索闲鱼商品，参数:', params);
+    const client = getClient();
+    console.log('客户端创建成功，开始调用API');
+
+    const apiParams = {
       q: params.q,
       page_no: params.page || 1,
       page_size: params.pageSize || 20,
+    };
+    console.log('API参数:', apiParams);
+
+    // 将回调函数转换为 Promise
+    const result = await new Promise((resolve, reject) => {
+      client.execute('taobao.idle.item.search', apiParams, function(error, response) {
+        console.log('回调函数被调用，error:', error, 'response:', response);
+        if (error) {
+          reject(error);
+        } else {
+          resolve(response);
+        }
+      });
     });
+
+    console.log('API调用返回结果:', JSON.stringify(result, null, 2));
     return result;
   } catch (error) {
     console.error('搜索闲鱼商品失败:', error);
@@ -29,8 +63,17 @@ export async function searchIdleItems(params: {
 // 闲鱼商品详情接口
 export async function getIdleItemDetail(itemId: string) {
   try {
-    const result = await taobaoClient.execute('taobao.idle.item.info', {
-      item_id: itemId,
+    const client = getClient();
+    const result = await new Promise((resolve, reject) => {
+      client.execute('taobao.idle.item.info', {
+        item_id: itemId,
+      }, function(error, response) {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(response);
+        }
+      });
     });
     return result;
   } catch (error) {
@@ -42,8 +85,17 @@ export async function getIdleItemDetail(itemId: string) {
 // 闲鱼用户信息接口
 export async function getIdleUserInfo(sellerId: string) {
   try {
-    const result = await taobaoClient.execute('taobao.idle.user.info', {
-      seller_id: sellerId,
+    const client = getClient();
+    const result = await new Promise((resolve, reject) => {
+      client.execute('taobao.idle.user.info', {
+        seller_id: sellerId,
+      }, function(error, response) {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(response);
+        }
+      });
     });
     return result;
   } catch (error) {
